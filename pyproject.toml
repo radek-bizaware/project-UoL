@@ -1,9 +1,9 @@
 [project]
-name = "placeholder_project_name"
+name = "Pokemon_Guessing_Game"
 version = "0.0.1"
-description = "Your project description here"
+description = "Streamlit based game where participant is guessing pokemon names. The more pokemons guessed the more pooints gets"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = { file = "LICENSE" }
 authors = [{ name = "Your Name", email = "you@example.com" }]
 dependencies = [
