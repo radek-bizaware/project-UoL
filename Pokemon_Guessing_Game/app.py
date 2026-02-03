@@ -8,13 +8,66 @@ st.set_page_config(page_title="Pokemon Guessing Game")
 st.title("Can you guess em all")
 st.write("The rules are simple: guess as many as you can!")
 
-df = pd.read_csv("Scoreboard.csv")
-top = df.sort_values("Score", ascending=False).head(3).reset_index(drop=True)
 
-c1, c2, c3 = st.columns(3)
-c1.metric("🥇 1st", top.loc[0, "Player"], int(top.loc[0, "Score"]))
-c2.metric("🥈 2nd", top.loc[1, "Player"], int(top.loc[1, "Score"]))
-c3.metric("🥉 3rd", top.loc[2, "Player"], int(top.loc[2, "Score"]))
+def leaderboard(pathway_to_csv="Scoreboard.csv", title="Pokemon Guessing Game"):
+    st.subheader(f"🏆 {title} Leaderboard")
+
+    try:
+        df = pd.read_csv(pathway_to_csv)
+
+        if df.empty:
+            st.info("No scores recorded yet.")
+            return
+
+        top = (
+            df.sort_values("Score", ascending=False)
+              .head(5)
+              .reset_index(drop=True)
+        )
+
+        # --- Top 3 Podium ---
+        if len(top) >= 3:
+            c1, c2, c3 = st.columns(3)
+
+            c1.metric(
+                "🥇 1st",
+                top.loc[0, "Player"],
+                int(top.loc[0, "Score"])
+            )
+
+            c2.metric(
+                "🥈 2nd",
+                top.loc[1, "Player"],
+                int(top.loc[1, "Score"])
+            )
+
+            c3.metric(
+                "🥉 3rd",
+                top.loc[2, "Player"],
+                int(top.loc[2, "Score"])
+            )
+
+        # --- Remaining Top 5 Table ---
+        if len(top) > 3:
+            st.markdown("### Other Top Players")
+            st.table(top.iloc[3:])
+
+    except FileNotFoundError:
+        st.warning("Scoreboard file not found.")
+    except Exception as e:
+        st.error(f"Something went wrong: {e}")
+
+ # --- Remaining Top 5 Table ---
+        if len(top) > 3:
+            st.markdown("### Other Top Players")
+            st.table(top.iloc[3:])
+
+    except FileNotFoundError:
+        st.warning("Scoreboard file not found.")
+    except Exception as e:
+        st.error(f"Something went wrong: {e}")
+
+leaderboard()
 
 
 # initialise first
