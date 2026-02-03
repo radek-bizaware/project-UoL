@@ -1,10 +1,21 @@
 import streamlit as st
 import pypokedex
 import pandas as pd
+import time
+
 
 st.set_page_config(page_title="Pokemon Guessing Game")
-st.title("Welcome to the most amazing Pokemon Guessing Game")
+st.title("Can you guess em all")
 st.write("The rules are simple: guess as many as you can!")
+
+df = pd.read_csv("Scoreboard.csv")
+top = df.sort_values("Score", ascending=False).head(3).reset_index(drop=True)
+
+c1, c2, c3 = st.columns(3)
+c1.metric("🥇 1st", top.loc[0, "Player"], int(top.loc[0, "Score"]))
+c2.metric("🥈 2nd", top.loc[1, "Player"], int(top.loc[1, "Score"]))
+c3.metric("🥉 3rd", top.loc[2, "Player"], int(top.loc[2, "Score"]))
+
 
 # initialise first
 if "Guessed_Pokemons" not in st.session_state:
@@ -12,9 +23,8 @@ if "Guessed_Pokemons" not in st.session_state:
 
 Game_Guesses = st.session_state["Guessed_Pokemons"]
 
-Leaderboard = pd.read_csv('Scoreboard.csv')
-top20 = Leaderboard.sort_values('Score', ascending=False).head(20)
-st.table(top20)
+
+
 
 Player_Name = st.text_input("Name", placeholder="Type your name here")
 show_panel = bool(Player_Name.strip())
