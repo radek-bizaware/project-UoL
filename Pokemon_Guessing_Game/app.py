@@ -16,5 +16,15 @@ if "show_section" not in st.session_state:
 if st.button("Start New Game"):
     st.session_state["show_section"] = True
 
-if st.session_state["show_section"]:
-    st.subheader("The Game Starts Now")
+
+# ---- FORM ----
+with st.form("guess_form", clear_on_submit=True):
+    guess = st.text_input("Can you guess any Pokémon?")
+    submitted = st.form_submit_button("Add (or press Enter)")
+
+    if submitted and guess:
+        st.session_state.Guessed_Pokemons.append(guess.strip().lower())
+
+# ---- DISPLAY LIST ----
+st.subheader("Your guesses")
+st.write(st.session_state.Guessed_Pokemons)
