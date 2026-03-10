@@ -30,7 +30,6 @@ nox.options.reuse_existing_virtualenvs = True
 nox.options.default_venv_backend = "uv"
 
 
-
 def uv(session, *args):
     """Run uv commands inside a nox session."""
     session.run("uv", *args, "--active", external=True)
