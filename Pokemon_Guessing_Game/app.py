@@ -4,12 +4,11 @@ import pandas as pd
 import time
 import difflib
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 
 st.set_page_config(page_title="Pokemon Guessing Game")
 st.title("Can you guess 'em all?")
 st.write("The rules are simple: pick a time limit, type Pokémon names, submit — get scored!")
-
 
 SCOREBOARD_PATH = "Scoreboard.csv"
 
@@ -46,7 +45,7 @@ def leaderboard(pathway_to_csv: str = SCOREBOARD_PATH, title: str = "Pokemon Gue
 
 
 def save_score(player: str, score: int, pathway_to_csv: str = SCOREBOARD_PATH):
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).isoformat()
     row = {"Player": player, "Score": score, "When": now}
     # read existing data, append, and persist immediately
     try:
@@ -174,6 +173,7 @@ def try_validate_guess(raw_guess: str, gen_choice: str, difficulty: str):
 
 
 def _build_name_list_for_gen(gen):
+    # return list of lowercase pokemon names for a generation; cached in session
     gen_ranges = {
         "1": (1, 151),
         "2": (152, 251),
@@ -243,15 +243,24 @@ else:
                     st.error("Not a valid Pokémon name.")
                     if allow_hints:
                         names = _build_name_list_for_gen(gen_choice)
-                        suggestions = difflib.get_close_matches(guess.lower(), names, n=5, cutoff=0.7)
+                        if not names:
+                            st.warning("Hint list empty (generation filter may be too restrictive). Try 'All' or restart the app.")
+                        # use a slightly lower cutoff to improve coverage
+                        suggestions = difflib.get_close_matches(guess.lower(), names, n=5, cutoff=0.6)
                         if suggestions:
                             st.info("Did you mean: " + ", ".join([s.title() for s in suggestions]))
+                        else:
+                            st.info("No close matches found. Check your spelling or try a different generation.")
 
         st.write("Correct guesses:", [d["name"].title() for d in st.session_state.guessed_correct])
         st.write("Tried (including incorrect):", sorted(list(st.session_state.tried)))
 
-        # refresh to update countdown
-        st.experimental_rerun()
+        # countdown should tick even if user doesn't submit; pause then rerun
+        time.sleep(1)
+        try:
+            st.experimental_rerun()
+        except AttributeError:
+            pass
     else:
         # game not active or finished
         if st.session_state.get("game_active"):
