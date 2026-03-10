@@ -192,7 +192,17 @@ def pytest_loud(session):
         "tests",
     )
 
+@nox.session(python=PYTHON_VERSION)
+def precommit(session):
+    """
+    Equivalent of:
+      make precommit
+    """
 
+    session.notify("ruff_check")
+    session.notify("black_check")
+    session.notify("mypy_check")
+    session.notify("tomlsort_check")
 #
 # Packaging
 #
