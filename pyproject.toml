@@ -7,7 +7,9 @@ requires-python = ">=3.12"
 license = { file = "LICENSE" }
 authors = [{ name = "Your Name", email = "you@example.com" }]
 dependencies = [
-  # dependencies go here
+  "Streamlit",
+  "pandas",
+  "pypokedex",
 ]
 
 [dependency-groups]
@@ -60,5 +62,3 @@ exclude = [
   "README.md",
   # add other files or directories to exclude from linting here
 ]
-
-

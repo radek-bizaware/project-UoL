@@ -1,10 +1,11 @@
-import streamlit as st
-import pypokedex
-import pandas as pd
-import time
 import difflib
 import re
+import time
 from datetime import datetime, timezone
+
+import pandas as pd
+import pypokedex
+import streamlit as st
 
 st.set_page_config(page_title="Pokemon Guessing Game")
 st.title("Can you guess 'em all?")
@@ -13,7 +14,7 @@ st.write("The rules are simple: pick a time limit, type Pokémon names, submit �
 SCOREBOARD_PATH = "Scoreboard.csv"
 
 
-def leaderboard(pathway_to_csv: str = SCOREBOARD_PATH, title: str = "Pokemon Guessing Game"):
+def leaderboard(pathway_to_csv: str = SCOREBOARD_PATH, title: str = "Pokemon Guessing Game") -> None:
     st.subheader(f"🏆 {title} Leaderboard")
 
     # ensure file exists with header
@@ -21,7 +22,7 @@ def leaderboard(pathway_to_csv: str = SCOREBOARD_PATH, title: str = "Pokemon Gue
         df = pd.read_csv(pathway_to_csv)
     except FileNotFoundError:
         # create an empty leaderboard file so subsequent writes persist
-        pd.DataFrame(columns=["Player","Score","When"]).to_csv(pathway_to_csv, index=False)
+        pd.DataFrame(columns=["Player", "Score", "When"]).to_csv(pathway_to_csv, index=False)
         st.info("No scores recorded yet.")
         return
     except Exception as e:
@@ -37,7 +38,7 @@ def leaderboard(pathway_to_csv: str = SCOREBOARD_PATH, title: str = "Pokemon Gue
     cols = st.columns(3)
     for i in range(3):
         if i < len(top):
-            cols[i].metric(f"{['🥇','🥈','🥉'][i]} {i+1}th", top.loc[i, "Player"], int(top.loc[i, "Score"]))
+            cols[i].metric(f"{['🥇', '🥈', '🥉'][i]} {i + 1}th", top.loc[i, "Player"], int(top.loc[i, "Score"]))
 
     if len(top) > 3:
         st.markdown("### Other Top Players")
@@ -244,7 +245,9 @@ else:
                     if allow_hints:
                         names = _build_name_list_for_gen(gen_choice)
                         if not names:
-                            st.warning("Hint list empty (generation filter may be too restrictive). Try 'All' or restart the app.")
+                            st.warning(
+                                "Hint list empty (generation filter may be too restrictive). Try 'All' or restart the app."
+                            )
                         # use a slightly lower cutoff to improve coverage
                         suggestions = difflib.get_close_matches(guess.lower(), names, n=5, cutoff=0.6)
                         if suggestions:
@@ -274,7 +277,9 @@ else:
             if st.session_state.guessed_correct:
                 df_results = pd.DataFrame(st.session_state.guessed_correct)
                 df_results_display = df_results.copy()
-                df_results_display["types"] = df_results_display["types"].apply(lambda x: ", ".join(x) if isinstance(x, (list, tuple)) else x)
+                df_results_display["types"] = df_results_display["types"].apply(
+                    lambda x: ", ".join(x) if isinstance(x, (list, tuple)) else x
+                )
                 st.markdown("### Your Correct Guesses")
                 st.table(df_results_display)
 

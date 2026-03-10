@@ -1,6 +1,9 @@
 import os
+
 import pandas as pd
+
 from Pokemon_Guessing_Game import app
+
 
 def test_leaderboard():
     # create a temporary csv path
@@ -12,7 +15,7 @@ def test_leaderboard():
     app.leaderboard(pathway_to_csv=tmp, title="Test")
     assert os.path.exists(tmp)
     df = pd.read_csv(tmp)
-    assert list(df.columns) == ["Player","Score","When"]
+    assert list(df.columns) == ["Player", "Score", "When"]
 
     # saving a score should append a row
     app.save_score("foo", 10, pathway_to_csv=tmp)
@@ -23,5 +26,3 @@ def test_leaderboard():
 
     # cleanup
     os.remove(tmp)
-
-

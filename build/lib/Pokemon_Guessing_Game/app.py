@@ -1,7 +1,5 @@
 import streamlit as st
-import pypokedex
 import pandas as pd
-import time
 
 
 st.set_page_config(page_title="Pokemon Guessing Game")
@@ -23,8 +21,6 @@ if "Guessed_Pokemons" not in st.session_state:
 Game_Guesses = st.session_state["Guessed_Pokemons"]
 
 
-
-
 Player_Name = st.text_input("Name", placeholder="Type your name here")
 show_panel = bool(Player_Name.strip())
 
@@ -42,9 +38,3 @@ if show_panel:
             st.session_state["Guessed_Pokemons"].append(guess.strip().lower())
 
     st.write("Your guesses:", st.session_state["Guessed_Pokemons"])
-
-
-
-
-
-
